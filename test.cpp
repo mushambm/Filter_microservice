@@ -7,62 +7,67 @@ using namespace httplib;
 using namespace std;
 
 int main() {
-
-    Client cli("localhost", 8080);
+    // Points directly to the server running on port 8995
+    Client cli("127.0.0.1", 9442);
 
     json tasks = {
         {"tasks", {
-            {
-                {"name", "Fix login bug"},
-                {"completed", false}
-            },
-            {
-                {"name", "Write tests"},
-                {"completed", true}
-            },
-            {
-                {"name", "Deploy app"},
-                {"completed", false}
-            }
+            {{"name", "Fix login bug"}, {"completed", false}},
+            {{"name", "Write tests"}, {"completed", true}},
+            {{"name", "Deploy app"}, {"completed", false}}
         }}
     };
 
-    // Test 1 - Completed Tasks
+    // -----------------------------
+    // TEST 1 - COMPLETED TASKS
+    // -----------------------------
     json completedRequest;
     completedRequest["filterType"] = "completed";
     completedRequest["tasks"] = tasks["tasks"];
 
-    auto res1 = cli.Post("/filter/tasks",
-                         completedRequest.dump(),
-                         "application/json");
+    auto res1 = cli.Post("/filter/tasks", completedRequest.dump(), "application/json");
 
     cout << "Completed Tasks:" << endl;
-    cout << res1->body << endl << endl;
+    if (res1) {
+        cout << res1->body << endl;
+    } else {
+        cout << "Request failed. Is the app server running on port 8995?" << endl;
+    }
+    cout << endl;
 
-    // Test 2 - Active Tasks
+    // -----------------------------
+    // TEST 2 - ACTIVE TASKS
+    // -----------------------------
     json activeRequest;
     activeRequest["filterType"] = "active";
     activeRequest["tasks"] = tasks["tasks"];
 
-    auto res2 = cli.Post("/filter/tasks",
-                         activeRequest.dump(),
-                         "application/json");
+    auto res2 = cli.Post("/filter/tasks", activeRequest.dump(), "application/json");
 
     cout << "Active Tasks:" << endl;
-    cout << res2->body << endl << endl;
+    if (res2) {
+        cout << res2->body << endl;
+    } else {
+        cout << "Request failed. Is the app server running on port 8995?" << endl;
+    }
+    cout << endl;
 
-    // Test 3 - Keyword Filter
+    // -----------------------------
+    // TEST 3 - KEYWORD FILTER
+    // -----------------------------
     json keywordRequest;
     keywordRequest["filterType"] = "keyword";
     keywordRequest["filterValue"] = "bug";
     keywordRequest["tasks"] = tasks["tasks"];
 
-    auto res3 = cli.Post("/filter/tasks",
-                         keywordRequest.dump(),
-                         "application/json");
+    auto res3 = cli.Post("/filter/tasks", keywordRequest.dump(), "application/json");
 
     cout << "Keyword Filter:" << endl;
-    cout << res3->body << endl;
+    if (res3) {
+        cout << res3->body << endl;
+    } else {
+        cout << "Request failed. Is the app server running on port 8995?" << endl;
+    }
 
     return 0;
 }
